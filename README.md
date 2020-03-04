@@ -25,7 +25,7 @@ $ cargo run
 
 ### Go on it
 
-Launch your favorite web browser to the adress:
+Launch your favorite web browser on the address:
 ```
 http://127.0.0.1:7878/
 ```
