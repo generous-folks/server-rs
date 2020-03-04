@@ -3,6 +3,18 @@ use std::sync::Mutex;
 use std::sync::mpsc;
 use std::thread;
 
+/// Wrapper around the `std::thread` feature, which allow to create a pool of threads,
+/// for executing jobs on multiple thread without dealing with concurrency.
+/// 
+/// After creating a pool of threads with a limit number, it will wait until [`execute`] it with a closure.
+/// The thread will send a message to a `Worker` which will consume the job.
+/// Automatically deal with concurrency by using `Arc` and `Mutex` features.
+/// 
+/// [`execute`]: #method.execute
+/// 
+/// # Shutdown
+/// 
+/// When the program is shutting down, it will properly close the thread at the end of their current job.
 pub struct ThreadPool {
     workers: Vec<Worker>,
     sender: mpsc::Sender<Message>,
@@ -33,6 +45,9 @@ impl ThreadPool {
         }
 	}
 
+    /// Execute a ThreadPool.
+    /// 
+    /// The closure to execute once as job.
 	pub fn execute<F>(&self, f: F) 
         where
             F: FnOnce() + Send + 'static
